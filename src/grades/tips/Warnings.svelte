@@ -13,7 +13,7 @@
 
   let gradeDelta = $derived(reportedGrade && grade - reportedGrade);
   let nonLineUpCount = $derived.by(() => {
-    if (!categories || !reportedCategories) return 0;
+    if (!reportedCategories) return 0;
 
     const notEqual = (a: number, b: number) => Math.abs(a - b) > 0.1;
 

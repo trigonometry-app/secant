@@ -9,11 +9,12 @@
     assignments,
     futureAssignments,
     categories,
+    syntheticCategories,
     openSimulator,
     grade,
   }: ClassGrade & { openSimulator: () => void; grade: number } = $props();
 
-  let hasCategories = $derived(categories && Object.keys(categories).length > 1);
+  let hasCategories = $derived(Object.keys(categories).length > 1);
 
   // Calculate semester progress
   const timeBasedProgress = getTimeBasedProgress();
@@ -23,7 +24,11 @@
 
   const openToss = () => {
     let prompt = '';
-    prompt += `the user just hit a "toss" button on secant, tossing their grades in ${categories ? 'a weighted' : 'an unweighted'} class to you. `;
+    if (syntheticCategories) {
+      prompt += `the user just hit a "toss" button on secant, tossing their grades to you. note: this class does not have official category weights from StudentVUE. secant has derived weights proportional to each category's share of total points — so if Tests have 80% of the total points, the Tests category weight will be 0.8. this is helpful for understanding composition even without formal weighting. `;
+    } else {
+      prompt += `the user just hit a "toss" button on secant, tossing their grades in a weighted class to you. `;
+    }
     if (grade < 93)
       prompt += `you're now being connected to the user, so explain how you can analyze them beyond a basic breakdown (secant already let the user view their grade, their composition, and run what-ifs ("simulate")) quick`;
     else
@@ -31,11 +36,9 @@
     prompt += `\n\noverall grade: ${grade}%`;
     prompt += `\n% through the semester (measured by days): ${roundTo(timeBasedProgress * 100, 1)}%`;
     prompt += `\n% through the semester (measured by visible coursework): ${roundTo(pointBasedProgress * 100, 1)}%`;
-    if (categories) {
-      prompt += `\n\ncategories:`;
-      for (const [k, v] of Object.entries(categories)) {
-        prompt += `\n${k}: ${JSON.stringify(v)}`;
-      }
+    prompt += `\n\ncategories:`;
+    for (const [k, v] of Object.entries(categories)) {
+      prompt += `\n${k}: ${JSON.stringify(v)}`;
     }
     prompt += `\n\nall assignments:`;
     prompt += `\n${assignments.map((x) => JSON.stringify(x)).join('\n')}`;

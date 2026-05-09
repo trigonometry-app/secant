@@ -23,9 +23,7 @@
 </div>
 {#if clazz.assignments.length > 1}
   <div
-    class="column"
-    class:categories={clazz.categories}
-    class:no-categories={!clazz.categories}
+    class="column categories"
     style:flex-grow="1"
   >
     <GradeBar {...clazz} />
@@ -51,10 +49,6 @@
     &.categories {
       display: grid;
       grid-template-rows: 1rem 1fr;
-    }
-    &.no-categories {
-      display: grid;
-      grid-template-rows: 1fr auto;
     }
     @media (width >= 40rem) {
       min-width: 25rem;

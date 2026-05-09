@@ -7,7 +7,7 @@
 
   const calculateWidths = (
     assignments: Assignment[],
-    categories: Record<string, { weight: number }> | undefined,
+    categories: Record<string, { weight: number }>,
   ) => {
     let output: { name: string; percent: number; weight: number }[] = [];
     const run = (these: Assignment[], weight: number) => {
@@ -21,15 +21,11 @@
       }
     };
 
-    if (categories) {
-      for (const [name, { weight }] of Object.entries(categories)) {
-        run(
-          assignments.filter((a) => a.category == name),
-          weight,
-        );
-      }
-    } else {
-      run(assignments, 1);
+    for (const [name, { weight }] of Object.entries(categories)) {
+      run(
+        assignments.filter((a) => a.category == name),
+        weight,
+      );
     }
     return output;
   };

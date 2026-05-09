@@ -7,7 +7,6 @@
   let entries = $derived.by(() => {
     const run = (these: Assignment[], weight: number): { name: string; size: number }[] => {
       const totalWeight = these.reduce((a, b) => a + b.possible, 0);
-      let stats = { earned: 0, possible: 0 };
       const result: { name: string; size: number }[] = [];
 
       for (const assignment of these) {
@@ -17,9 +16,6 @@
             size: (assignment.possible / totalWeight) * weight,
           });
         }
-
-        stats.earned += assignment.earned;
-        stats.possible += assignment.possible;
       }
 
       return result;
@@ -27,18 +23,14 @@
 
     let allEntries: { name: string; size: number }[] = [];
 
-    if (categories) {
-      for (const [name, { weight }] of Object.entries(categories)) {
-        allEntries = [
-          ...allEntries,
-          ...run(
-            assignments.filter((a) => a.category == name),
-            weight,
-          ),
-        ];
-      }
-    } else {
-      allEntries = run(assignments, 1);
+    for (const [name, { weight }] of Object.entries(categories)) {
+      allEntries = [
+        ...allEntries,
+        ...run(
+          assignments.filter((a) => a.category == name),
+          weight,
+        ),
+      ];
     }
 
     return allEntries;

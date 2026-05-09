@@ -1,7 +1,6 @@
 import { districtSemesters } from 'school-districts';
 import { getLoginRecognized } from 'monoidentity';
 import type { ClassGrade } from './types';
-import { getPoints } from './utils';
 
 export const getSemester = () => {
   const { email } = getLoginRecognized();
@@ -24,14 +23,8 @@ export const getTimeBasedProgress = () => {
 export const getPointBasedProgress = (
   assignments: ClassGrade['assignments'],
   futureAssignments: ClassGrade['futureAssignments'],
-  categories?: ClassGrade['categories'],
+  categories: ClassGrade['categories'],
 ) => {
-  if (!categories) {
-    const possible = getPoints(assignments).possible;
-    const futurePossible = futureAssignments.reduce((a, b) => a + b.points, 0);
-    const total = possible + futurePossible;
-    return total > 0 ? possible / total : 0;
-  }
   let cumulativeProgress = 0;
   for (const [category, { possible, weight }] of Object.entries(categories)) {
     const futurePossible = futureAssignments

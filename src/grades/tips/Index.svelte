@@ -9,6 +9,7 @@
     categories,
     assignments,
     futureAssignments,
+    syntheticCategories,
     grade,
     ...extra
   }: ClassGrade & {
@@ -82,6 +83,9 @@
     </div>
   {/if}
   <Warnings {categories} {assignments} {futureAssignments} {...extra} {grade} />
+  {#if syntheticCategories}
+    <div class="tip notice">Categories are representative (not actually weighted)</div>
+  {/if}
 </div>
 
 <style>
@@ -89,6 +93,7 @@
     display: grid;
     grid-template-columns: auto auto;
     gap: 0.5rem;
+    max-width: 35rem;
 
     > :global(*) {
       background-color: var(--m3c-surface-container-low);

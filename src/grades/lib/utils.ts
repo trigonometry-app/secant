@@ -10,7 +10,7 @@ export const getPoints = (assignments: { earned: number; possible: number }[]) =
 };
 export const recalculateGrade = (period: {
   assignments: { earned: number; possible: number; category: string }[];
-  categories?: Record<
+  categories: Record<
     string,
     {
       earned: number;
@@ -19,17 +19,12 @@ export const recalculateGrade = (period: {
     }
   >;
 }) => {
-  if (period.categories) {
-    let percent = 0;
-    for (const category of Object.values(period.categories)) {
-      percent += (category.earned / category.possible) * category.weight * 100;
-    }
-
-    return percent;
+  let percent = 0;
+  for (const category of Object.values(period.categories)) {
+    percent += (category.earned / category.possible) * category.weight * 100;
   }
 
-  const { earned, possible } = getPoints(period.assignments);
-  return (earned / possible) * 100;
+  return percent;
 };
 export const roundTo = (n: number, d: number) => Math.round(n * 10 ** d) / 10 ** d;
 export const calculateLetter = (grade: number) => {

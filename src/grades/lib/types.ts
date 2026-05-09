@@ -8,6 +8,12 @@ export type Assignment = {
   missing: boolean;
   category: string;
 };
+export type CategoryInfo = {
+  earned: number;
+  possible: number;
+  weight: number;
+};
+
 export type ClassGrade = {
   period: number;
   title: string;
@@ -18,21 +24,9 @@ export type ClassGrade = {
     name: string;
   }[];
   failedAssignments?: { name: string }[];
-  categories?: Record<
-    string,
-    {
-      earned: number;
-      possible: number;
-      weight: number;
-    }
-  >;
+  categories: Record<string, CategoryInfo>;
+  /** True when all categories were auto-generated because the class has no StudentVUE category breakdown */
+  syntheticCategories?: true;
   reportedGrade?: number;
-  reportedCategories?: Record<
-    string,
-    {
-      earned: number;
-      possible: number;
-      weight: number;
-    }
-  >;
+  reportedCategories?: Record<string, CategoryInfo>;
 };

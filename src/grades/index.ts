@@ -77,6 +77,7 @@ const getGrade = (clazz: any): ClassGrade | undefined => {
 
   let categories: ClassGrade['categories'] = {};
   let reportedCategories: ClassGrade['reportedCategories'] = {};
+  let syntheticCategories: ClassGrade['syntheticCategories'] = undefined;
   if (mark.GradeCalculationSummary?.AssignmentGradeCalc) {
     const calcs = iterating(mark.GradeCalculationSummary.AssignmentGradeCalc);
     const assignmentsGrouped = Object.groupBy(assignments, (a) => a.category);
@@ -132,8 +133,21 @@ const getGrade = (clazz: any): ClassGrade | undefined => {
       category.weight /= totalWeight;
     }
   } else {
-    categories = undefined;
+    // No StudentVUE category weights — derive proportional weights from actual points
+    const assignmentsGrouped = Object.groupBy(assignments, (a) => a.category);
+    const totalPossible = assignments.reduce((a, b) => a + b.possible, 0);
+    categories = {};
+    for (const [name, items] of Object.entries(assignmentsGrouped)) {
+      const earned = items.reduce((a, b) => a + b.earned, 0);
+      const possible = items.reduce((a, b) => a + b.possible, 0);
+      categories[name] = {
+        earned,
+        possible,
+        weight: totalPossible > 0 ? possible / totalPossible : 1 / Object.keys(assignmentsGrouped).length,
+      };
+    }
     reportedCategories = undefined;
+    syntheticCategories = true;
   }
 
   return {
@@ -143,6 +157,7 @@ const getGrade = (clazz: any): ClassGrade | undefined => {
     futureAssignments,
     failedAssignments,
     categories,
+    syntheticCategories,
     reportedGrade,
     reportedCategories,
   };

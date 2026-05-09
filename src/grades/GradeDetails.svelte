@@ -2,41 +2,34 @@
   import { simplifyCategory, shortenCategory } from './lib/naming';
   import CategoryRepresentation from './lib/CategoryRepresentation.svelte';
   import type { ClassGrade } from './lib/types';
-  import { roundTo, getPoints } from './lib/utils';
+  import { roundTo } from './lib/utils';
 
-  let { categories, assignments }: ClassGrade = $props();
+  let { categories }: ClassGrade = $props();
 </script>
 
-{#if categories}
-  <div class="categories">
-    {#each Object.entries(categories) as [name, { earned, possible, weight }] (name)}
-      <div class="category" style:--weight="{weight * 100}%">
-        <h3>
-          {shortenCategory(name)}
-          {#if weight < 1}
-            <CategoryRepresentation category={simplifyCategory(name)} />
-          {/if}
-        </h3>
+<div class="categories">
+  {#each Object.entries(categories) as [name, { earned, possible, weight }] (name)}
+    <div class="category" style:--weight="{weight * 100}%">
+      <h3>
+        {shortenCategory(name)}
         {#if weight < 1}
-          <p>
-            {roundTo((earned / possible) * 100, 2)}%
-            <span class="hover-only">({roundTo(earned, 2)} / {possible})</span>
-          </p>
-          <p>
-            As {roundTo((earned / possible) * weight * 100, 1)} / {roundTo(weight * 100, 1)}%
-          </p>
-        {:else}
-          <p>{roundTo(earned, 2)} / {possible}</p>
+          <CategoryRepresentation category={simplifyCategory(name)} />
         {/if}
-      </div>
-    {/each}
-  </div>
-{:else}
-  {@const { earned, possible } = getPoints(assignments)}
-  <div class="points">
-    {roundTo(earned, 2)} / {possible}
-  </div>
-{/if}
+      </h3>
+      {#if weight < 1}
+        <p>
+          {roundTo((earned / possible) * 100, 2)}%
+          <span class="hover-only">({roundTo(earned, 2)} / {possible})</span>
+        </p>
+        <p>
+          As {roundTo((earned / possible) * weight * 100, 1)} / {roundTo(weight * 100, 1)}%
+        </p>
+      {:else}
+        <p>{roundTo(earned, 2)} / {possible}</p>
+      {/if}
+    </div>
+  {/each}
+</div>
 
 <style>
   .categories {
@@ -96,12 +89,4 @@
     opacity: 1;
   }
 
-  .points {
-    display: flex;
-    justify-content: center;
-
-    padding: 0.5rem;
-    border-radius: 1rem;
-    background-color: var(--m3c-surface-container-low);
-  }
 </style>
