@@ -3,6 +3,7 @@ export const simplifyCategory = /* @__PURE__ */ (name: string) => {
 
   if (name.includes('formative')) return 'assignment';
   if (name.includes('homework')) return 'assignment';
+  if (name.includes('hausaufgaben')) return 'assignment';
   if (name.includes('classwork')) return 'assignment';
   if (name.includes('assignment')) return 'assignment';
   if (name.includes('practice')) return 'assignment';
